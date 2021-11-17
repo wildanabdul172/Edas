@@ -2,6 +2,20 @@ html {
 	font-size: 14px;
 }
 
+.navbar-expand-md {
+	display: flex;
+	background-color: #2FDD92;
+}
+
+.navbar-brand {
+	font-family: 'Caveat Brush', cursive;
+
+}
+
+.btn.button-success {
+	background-color: #34BE82;
+}
+
 
 @media (min-width: 768px) {
 	html {
