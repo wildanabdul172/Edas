@@ -1,5 +1,5 @@
 # Template Admin
-This code using SB Admin 2 Template. If you wanna try it, you can import the sql files "template_admin.sql" in your database. And setting application/config/database.php with your config
+This code using SB Admin 2 Template. If you wanna try it, you can import the sql files "admin.sql" in your database. And setting application/config/database.php with your config
 
 # Features : 
 - Simple Auth (Login & Register)
@@ -9,8 +9,3 @@ This code using SB Admin 2 Template. If you wanna try it, you can import the sql
 - Edit profile & Change Password with e-mail verification
 
 I am going to add with some features and re-design the template. See You!
-
-# Credits to : 
-- Mr. Sandhika Galih
-- SB Admin 2 Template
-
