@@ -2,18 +2,48 @@ html {
 	font-size: 14px;
 }
 
-.navbar-expand-md {
+.navbar {
+	box-shadow: 5px 5px 18px #888888;
+}
+
+.navbar-light {
 	display: flex;
 	background-color: #2FDD92;
 }
 
 .navbar-brand {
 	font-family: 'Caveat Brush', cursive;
+	color: #2FDD92;
+	font-weight: bold;
+	letter-spacing: 4px;
+	font-size: 2em;
 
 }
 
-.btn.button-success {
-	background-color: #34BE82;
+.navbar-brand:hover {
+	color: #34BE82;
+}
+
+.nav-link {
+	font-family: 'Caveat Brush', cursive;
+	color: white;
+	outline-color: #2FDD92;
+	outline-style: auto;
+	margin: 3px;
+	background-color: #2FDD92;
+}
+
+.nav-link:hover {
+	font-family: 'Caveat Brush', cursive;
+	color: #34BE82;
+}
+
+button.btn.btn-success,
+.navbar-toggler {
+	background-color: #2FDD92;
+	outline-color: #2FDD92;
+	outline-style: auto;
+	font-family: 'Caveat Brush', cursive;
 }
 
 

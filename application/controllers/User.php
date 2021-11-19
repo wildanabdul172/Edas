@@ -11,14 +11,8 @@ class User extends CI_Controller
         $this->load->model('Menu_model', 'menu');
         $this->load->model('Admin_model', 'admin');
     }
-    public function index()
-    {
-        $data['title'] = 'Shopping';
 
-        $data['user'] = $this->user->getUserData();
-        $this->load->view('shop/menu', $data);
-    }
-    public function profile()
+    public function index()
     {
         $data['title'] = 'My Profile';
         // model

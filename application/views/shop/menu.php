@@ -23,29 +23,43 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-md navbar-dark">
-        <a class="navbar-brand" href="#">EDAS</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <form class="form-inline" action="/action_page.php">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand col-lg-2" href="#">EDAS</a>
+        <form class="form-inline col-sm" action="/action_page.php">
+            <input class="form-control mr-sm-2 col-sm" type="text" placeholder="Search">
             <button class="btn btn-success" type="submit">Search</button>
         </form>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav mr-20 ml-2">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+        <button class="navbar-toggler col-sm" type="button" data-toggle="collapse" data-target="navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse col-sm-2" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0 col-sm">
+                <li class="nav-item active">
+                    <a class="nav-link" href="<?= base_url('shop'); ?>">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="<?= base_url('auth'); ?>">Sign in</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i></a>
                 </li>
             </ul>
         </div>
+
     </nav>
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="..." alt="First Slide" class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+                <img src="..." alt="Second Slide" class="d-block w-100">
+            </div>
+            <div class="carousel-item">
+                <img src="..." alt="Third Slide" class="d-block w-100">
+            </div>
+        </div>
+    </div>
 
 </body>
 
