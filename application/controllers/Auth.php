@@ -35,7 +35,6 @@ class Auth extends CI_Controller
         $user = $this->user->userCheckLogin($username);
 
         if ($user != null) {
-            // if ($user['is_active'] == 1) {
             if (password_verify($password, $user['password'])) {
                 $data = [
                     'email' => $user['email'],
@@ -52,12 +51,51 @@ class Auth extends CI_Controller
                 $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Wrong password!</div>');
                 redirect('auth');
             }
-            // } else {
-            //     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">This email has not been activated!</div>');
-            //     redirect('auth');
         } else {
             $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Email is not registered!</div>');
             redirect('auth');
+        }
+    }
+
+    public function login_google()
+    {
+        include_once APPPATH . "../vendor/autoload.php";
+        $google_client = new Google_Client();
+        $google_client->setClientId('673702904974-32sgpikufmc54fkcsdg3soi694mb5dgt.apps.googleusercontent.com'); //masukkan ClientID anda 
+        $google_client->setClientSecret('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'); //masukkan Client Secret Key anda
+        $google_client->setRedirectUri('http://localhost/Edas/auth'); //Masukkan Redirect Uri anda
+        $google_client->addScope('email');
+        $google_client->addScope('profile');
+
+        if (isset($_GET["code"])) {
+            $token = $google_client->fetchAccessTokenWithAuthCode($_GET["code"]);
+            if (!isset($token["error"])) {
+                $google_client->setAccessToken($token['access_token']);
+                $this->session->set_userdata('access_token', $token['access_token']);
+                $google_service = new Google_Service_Oauth2($google_client);
+                $data = $google_service->userinfo->get();
+                $current_datetime = date('Y-m-d H:i:s');
+                $user_data = array(
+                    'first_name' => $data['given_name'],
+                    'last_name'  => $data['family_name'],
+                    'email_address' => $data['email'],
+                    'profile_picture' => $data['picture'],
+                    'updated_at' => $current_datetime
+                );
+                $this->session->set_userdata('user_data', $data);
+            }
+        }
+        $login_button = '';
+        if (!$this->session->userdata('access_token')) {
+
+            $login_button = '<a href="' . $google_client->createAuthUrl() . '"><img src="https://1.bp.blogspot.com/-gvncBD5VwqU/YEnYxS5Ht7I/AAAAAAAAAXU/fsSRah1rL9s3MXM1xv8V471cVOsQRJQlQCLcBGAsYHQ/s320/google_logo.png" /></a>';
+            $data['login_button'] = $login_button;
+            $this->load->view('google_login', $data);
+        } else {
+            // uncomentar kode dibawah untuk melihat data session email
+            // echo json_encode($this->session->userdata('access_token')); 
+            // echo json_encode($this->session->userdata('user_data'));
+            echo "Login success";
         }
     }
 
@@ -66,7 +104,6 @@ class Auth extends CI_Controller
         if ($this->session->userdata('email')) {
             redirect('user');
         }
-        // rules
         $this->form_validation->set_rules('name', 'Name', 'required|trim');
         $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[user.email]', [
             'is_unique' => 'This email is already exists'
@@ -99,18 +136,8 @@ class Auth extends CI_Controller
                 'is_active' => 0,
                 'date_created' => time()
             ];
-            // siapkan token
-            // $token = base64_encode(random_bytes(32));
-            // $user_token = [
-            //     'email' => $email,
-            //     'token' => $token,
-            //     'date_created' => time()
-            // ];
 
             $this->db->insert('user', $data);
-            // $this->db->insert('user_token', $user_token);
-
-            // $this->_sendEmail($token, 'verify');
 
 
             $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Congratulations! your account has been created. Please activate your account.</div>');
@@ -118,142 +145,19 @@ class Auth extends CI_Controller
         }
     }
 
-    // private function _sendEmail($token, $type)
-    // {
-    //     $config = [
-    //         'protocol'  => 'smtp',
-    //         'smtp_host' => 'ssl://smtp.googlemail.com',
-    //         'smtp_user' => 'mefamous1234@gmail.com', // your gmail
-    //         'smtp_pass' => '1234567890', // your password gmail
-    //         'smtp_port' => 465,
-    //         'mailtype'  => 'html',
-    //         'charset'   => 'utf-8',
-    //         'newline'   => "\r\n"
-    //     ];
-
-    //     $this->email->initialize($config);
-
-    //     $this->email->from('mefamous@gmail.com', '1234567890'); // from('your email', 'Your Name');
-    //     $this->email->to($this->input->post('email'));
-
-    //     if ($type == 'verify') {
-    //         $this->email->subject('Account Verification');
-    //         $this->email->message('Click this link to verify your account : <a href="' . base_url() . 'auth/verify?email=' . $this->input->post('email') . '&token=' . urlencode($token) . '"> Activate </a> ');
-    //     } else if ($type == 'forgotPass') {
-    //         $this->email->subject('Reset Password');
-    //         $this->email->message('Click this link to reset your password : <a href="' . base_url() . 'auth/resetpass?email=' . $this->input->post('email') . '&token=' . urlencode($token) . '"> Reset Password </a> ');
-    //     }
-
-    //     if ($this->email->send()) {
-    //         return true;
-    //     } else {
-    //         echo $this->email->print_debugger();
-    //         die;
-    //     }
-    // }
-
-    // public function verify()
-    // {
-    //     $email = $this->input->get('email');
-    //     $token = $this->input->get('token');
-
-    //     $user = $this->db->get_where('user', ['email' => $email])->row_array();
-
-    //     if ($user) {
-
-    //         $user_token = $this->db->get('user_token', ['token' => $token])->row_array();
-    //         if ($user_token) {
-    //             if (time() - $user_token['date_created'] < (60 * 60 * 24)) {
-    //                 $this->db->set('is_active', 1);
-    //                 $this->db->where('email', $email);
-    //                 $this->db->update('user');
-
-    //                 $this->db->delete('user_token', ['email' => $email]);
-    //                 $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">' . $email . ' has been activated! Please login</div>');
-    //                 redirect('auth');
-    //             } else {
-    //                 $this->db->delete('user', ['email' => $email]);
-    //                 $this->db->delete('user_token', ['email' => $email]);
-
-    //                 $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Account Activation failed! Token expired. </div>');
-    //                 redirect('auth');
-    //             }
-    //         } else {
-    //             $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Account Activation failed! Token invalid. </div>');
-    //             redirect('auth');
-    //         }
-    //     } else {
-    //         $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Account Activation failed! Wrong Email </div>');
-    //         redirect('auth');
-    //     }
-    // }
-
-
     public function logout()
     {
+        $this->session->unset_userdata('access_token');
         $this->session->unset_userdata('email');
         $this->session->unset_userdata('role_id');
         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">You have been logged out! </div>');
-        redirect('auth');
+        redirect('shop');
     }
 
     public function blocked()
     {
         $this->load->view('auth/blocked');
     }
-
-    // public function forgotpass()
-    // {
-    //     $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email');
-
-    //     if ($this->form_validation->run() == false) {
-    //         $data['title'] = 'Forgot Password';
-    //         $this->load->view('templates/auth_header', $data);
-    //         $this->load->view('auth/forgot-pass');
-    //         $this->load->view('templates/auth_footer');
-    //     } else {
-    //         $email = $this->input->post('email');
-    //         $user = $this->db->get_where('user', ['email' => $email, 'is_active' => 1])->row_array();
-
-    //         if ($user) {
-    //             $token = base64_encode(random_bytes(32));
-    //             $user_token = [
-    //                 'email' => $email,
-    //                 'token' => $token,
-    //                 'date_created' => time()
-    //             ];
-    //             $this->db->insert('user_token', $user_token);
-    //             // $this->_sendEmail($token, 'forgotPass');
-    //             $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Please check your email to reset your password! </div>');
-    //             redirect('auth/forgotpass');
-    //         } else {
-    //             $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">This email does not exist or activated! </div>');
-    //             redirect('auth/forgotpass');
-    //         }
-    //     }
-    // }
-
-    // public function resetpass()
-    // {
-    //     $email = $this->input->get('email');
-    //     $token = $this->input->get('token');
-
-    //     $user = $this->db->get_where('user', ['email' => $email])->row_array();
-
-    //     if ($user) {
-    //         $user_token = $this->db->get_where('user_token', ['token' => $token])->row_array();
-    //         if ($user_token) {
-    //             $this->session->set_userdata('reset_email', $email);
-    //             $this->changePassword();
-    //         } else {
-    //             $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Reset Password failed! Invalid token </div>');
-    //             redirect('auth/forgotpass');
-    //         }
-    //     } else {
-    //         $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Reset Password failed! Wrong email </div>');
-    //         redirect('auth');
-    //     }
-    // }
 
     public function changePassword()
     {

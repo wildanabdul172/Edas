@@ -37,9 +37,15 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="<?= base_url('shop'); ?>">Home <span class="sr-only">(current)</span></a>
                 </li>
+
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url('user'); ?>"><i class=" fas fa-user"></i></a>
+                </li> -->
+
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('auth'); ?>">Sign in</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i></a>
                 </li>
